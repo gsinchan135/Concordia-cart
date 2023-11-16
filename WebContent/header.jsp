@@ -21,9 +21,9 @@
 <body style="background-color: #E6F9E6;">
 	<!--Company Header Starting  -->
 	<div class="container-fluid text-center"
-		style="margin-top: 45px; background-color: #33cc33; color: white; padding: 5px;">
-		<h2>Ellison Electronics</h2>
-		<h6>We specialize in Electronics</h6>
+		style="margin-top: 45px; background-color: #8c2237; color: white; padding: 5px;">
+		<h2>Concordia Cart</h2>
+		<h6>Student Supplies</h6>
 		<form class="form-inline" action="index.jsp" method="get">
 			<div class="input-group">
 				<input type="text" class="form-control" size="50" name="search"
@@ -61,6 +61,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="login.jsp">Login</a></li>
 					<li><a href="register.jsp">Register</a></li>
+					<li><a href="">Recommendations</a></li>						
 					<li><a href="index.jsp">Products</a></li>
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
@@ -99,6 +100,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="userHome.jsp"><span
 							class="glyphicon glyphicon-home">Products</span></a></li>
+							<li><a href="">Recommendations</a></li>						
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
 					</a>
