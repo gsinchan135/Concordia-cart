@@ -93,8 +93,10 @@
 							<option value="speaker"
 								<%="speaker".equalsIgnoreCase(ptype) ? "selected" : ""%>>SPEAKER</option>
 							<option value="other"
-								<%="other".equalsIgnoreCase(ptype) ? "selected" : ""%>>Some
+								<%="other".equalsIgnoreCase(ptype) ? "selected" : ""%>>
 								Other Appliances</option>
+								<option value="speaker"
+								<%="stationery".equalsIgnoreCase(ptype) ? "selected" : ""%>>STATIONERY</option>
 						</select>
 					</div>
 				</div>

@@ -73,7 +73,8 @@
 							<option value="laptop">LAPTOP</option>
 							<option value="tablet">TABLET</option>
 							<option value="speaker">SPEAKER</option>
-							<option value="other">Some Other Appliances</option>
+							<option value="other">Other Appliances</option>
+							<option value="stationery">Stationery</option>			
 						</select>
 					</div>
 				</div>
