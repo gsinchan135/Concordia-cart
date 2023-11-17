@@ -61,7 +61,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="login.jsp">Login</a></li>
 					<li><a href="register.jsp">Register</a></li>
-					<li><a href="">Recommendations</a></li>						
+					<li><a href="programAndCourses.jsp">Recommendations</a></li>						
 					<li><a href="index.jsp">Products</a></li>
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
@@ -101,7 +101,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="userHome.jsp"><span
 							class="glyphicon glyphicon-home">Products</span></a></li>
-							<li><a href="">Recommendations</a></li>						
+							<li><a href="programAndCourses.jsp">Recommendations</a></li>						
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
 					</a>
