@@ -1,9 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ page
+	import="com.shashi.service.impl.*, com.shashi.service.*,com.shashi.beans.*,java.util.*,javax.servlet.ServletOutputStream,java.io.*"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Recommendations</title>
+<title>Concordia Cart</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/changes.css">
@@ -14,122 +18,106 @@
 </head>
 <body style="background-color: #E6F9E6;">
 
-	<%@ include file="header.jsp"%>
-
 	<%
-	String message = request.getParameter("message");
+	/* Checking the user credentials */
+	String userName = (String) session.getAttribute("username");
+	String password = (String) session.getAttribute("password");
+	String userType = (String) session.getAttribute("usertype");
+
+	boolean isValidUser = true;
+
+	if (userType == null || userName == null || password == null || !userType.equals("customer")) {
+
+		isValidUser = false;
+	}
+
+	ProductServiceImpl prodDao = new ProductServiceImpl();
+	List<ProductBean> products = new ArrayList<ProductBean>();
+
+	String search = request.getParameter("search");
+	String type = request.getParameter("type");
+	String message = "All Products";
+	if (search != null) {
+		products = prodDao.searchAllProducts(search);
+		message = "Showing Results for '" + search + "'";
+	} else if (type != null) {
+		products = prodDao.getAllProductsByType(type);
+		message = "Showing Results for '" + type + "'";
+	} else {
+		products = prodDao.getAllProducts();
+	}
+	if (products.isEmpty()) {
+		message = "No items found for the search '" + (search != null ? search : type) + "'";
+		products = prodDao.getAllProducts();
+	}
 	%>
+
+	<jsp:include page="header.jsp" />
+
+	<div class="text-center"
+		style="color: black; font-size: 14px; font-weight: bold;"><%=message%></div>
+	<div class="text-center" id="message"
+		style="color: black; font-size: 14px; font-weight: bold;"></div>
+	<!-- Start of Product Items List -->
 	<div class="container">
-		<div class="row"
-			style="margin-top: 5px; margin-left: 2px; margin-right: 2px;">
-			<form action="./LoginSrv" method="post"
-				class="col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2"
-				style="border: 2px solid black; border-radius: 10px; background-color: #FFE5CC; padding: 10px;">
-				<div style="font-weight: bold;" class="text-center">
-					<h2 style="color: green;">Login Form</h2>
-					<%
-					if (message != null) {
-					%>
-					<p style="color: blue;">
-						<%=message%>
+		<div class="row text-center">
+
+			<%
+			for (ProductBean product : products) {
+				int cartQty = new CartServiceImpl().getCartItemCount(userName, product.getProdId());
+			%>
+			<div class="col-sm-4" style='height: 350px;'>
+				<div class="thumbnail">
+					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
+						style="height: 150px; max-width: 180px">
+					<p class="productname"><%=product.getProdName()%>
 					</p>
 					<%
-					}
+					String description = product.getProdInfo();
+					description = description.substring(0, Math.min(description.length(), 100));
 					%>
+					<p class="productinfo"><%=description%>..
+					</p>
+					<p class="price">
+						$
+						<%=product.getProdPrice()%>
+					</p>
+					<form method="post">
+						<%
+						if (cartQty == 0) {
+						%>
+						<button type="submit"
+							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1"
+							class="btn btn-success">Add to Cart</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="submit"
+							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1"
+							class="btn btn-primary">Buy Now</button>
+						<%
+						} else {
+						%>
+						<button type="submit"
+							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=0"
+							class="btn btn-danger">Remove From Cart</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="submit" formaction="cartDetails.jsp"
+							class="btn btn-success">Checkout</button>
+						<%
+						}
+						%>
+					</form>
+					<br />
 				</div>
-				<div></div>
-				<div class="row">
-					<div class="col-md-12 form-group">
-						<label for="last_name">Program</label> <input type="text"
-							placeholder="Enter Program" name="username" class="form-control"
-							id="program">
-					</div>
-				</div>
-				
-				<%-- Course text box --%>
-			
-				<div class="row">
-					<div class="col-md-12 form-group">
-						<label for="last_name">Course</label> <input type="text"
-							placeholder="Enter Course" name="course" class="form-control"
-							id="course" >
-					<button type="button" onclick="addToList()">Add to List</button>
-						
-					</div>
-				</div>
-				<%-- List of courses --%>
-				
-				<div class = "row">
-					<div class="col-md-12 form-group">
-					<ul id="courseList">		
-					
-					</ul>
-				
-				    <script>
-				        function addToList() {
-				        	//FIXIT
-				        	//clicking on course text box and hitting enter removes most recent li
-				        	
-				        	
-				            <%-- Get the input value --%>
-				            var courseCode = document.getElementById('course').value;				
-				            if (courseCode.trim() !== "") {
-				            	
-				                // Create a new list item
-				                var listItem = document.createElement("li");
-				
-				                // Create a new span for the course code
-				                var courseCodeSpan = document.createElement("span");
-				                courseCodeSpan.style.display = 'block';
-				                courseCodeSpan.appendChild(document.createTextNode(courseCode));
-				                
-				                //style span
-				                courseCodeSpan.style.display = "inline-flex";
-				                courseCodeSpan.style.alignItems = "center"
-				                courseCodeSpan.style.verticalAlign = "middle";	
-				                courseCodeSpan.style.paddingLeft = "5px";
-				
-				                // Create a new remove button
-				                var removeButton = document.createElement("button");
-				                removeButton.appendChild(document.createTextNode("Remove"));
-				                removeButton.onclick = function() {
-				                    listItem.remove();
-				                };
-				                
-				            			             
-				                //add course code and remove to listItem
-				                listItem.appendChild(courseCodeSpan);
-				                listItem.appendChild(removeButton);
-				                
-				                //style listItem
-				                listItem.style.display = "flex";
-				                listItem.style.marginBottom = "1%";
-				                listItem.style.justifyContent = "space-between";
-				                listItem.style.border = "1px solid black";
-				                listItem.style.borderRadius = "5px";
-				
-				                // Add the new item to the list
-				                var courseList = document.getElementById("courseList");
-				                courseList.appendChild(listItem);
-				
-				                // Clear the input field
-				                course.value = "";
-				            }
-				        }
-				    </script>
-				    </div>
-				</div>
-				
-				<%-- Continue --%>
-				 <div class="row">
-					<div class="col-md-12 form-group">
-						<button type="button" href="">Add to List</button>
-					</div>
-				</div>
-			</form>
+			</div>
+
+			<%
+			}
+			%>
 
 		</div>
 	</div>
+	<!-- ENd of Product Items List -->
+
 
 	<%@ include file="footer.html"%>
 
