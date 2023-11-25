@@ -22,11 +22,11 @@
 	<div class="container">
 		<div class="row"
 			style="margin-top: 5px; margin-left: 2px; margin-right: 2px;">
-			<form method="post"
+			<form action="./RecommendationsSrv" method="post"
 				class="col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2"
 				style="border: 2px solid black; border-radius: 10px; background-color: #FFE5CC; padding: 10px;">
 				<div style="font-weight: bold;" class="text-center">
-					<h2 style="color: green;">Recommendation Form</h2>
+					<h2 style="color: green;">Program and Courses Form</h2>
 					<%
 					if (message != null) {
 					%>
@@ -205,6 +205,7 @@
 			
 				<div class="row">
 					<div class="col-md-12 form-group">
+					
 						<label for="last_name">Course</label> 
 						<input type="text"
 							placeholder="Enter Course" name="course" class="form-control"							id="course" maxlength="8">
@@ -223,7 +224,7 @@
 				    <script>
 				        function addToList() {
 				        	//FIXIT
-				        	//clicking on course text box and hitting enter removes most recent li
+				        	//clicking on course text box and hitting enter removes most recent li added
 				        	
 				        	
 				            <%-- Get the input value --%>
@@ -281,7 +282,7 @@
 				    </script>
 				    </div>
 				</div>
-				
+
 				
 			
 				<%-- Continue --%>
@@ -317,10 +318,10 @@
 									
 									//remove non alphanumeric characters and white space
 									program = program.replace(/[^a-zA-Z0-9]/g, '');
-									
+									program = program.toUpperCase();
 									
 									for(var  i = 0;i<program.length;i++){
-										programSeed += (program.charCodeAt(i));
+										programSeed += (program.charCodeAt(i)-47);
 									}
 									
 						
@@ -332,10 +333,12 @@
 							    								    			
 						    			//remove non alphanumeric characters and white space
 										courses[i] = courses[i].replace(/[^a-zA-Z0-9]/g, '');
+						    			
+						    			courses[i] = courses[i].toUpperCase();
 							    		
 							    		//loop through each character of an individual course
 							    		for(var  j = 0;j<courses[i].length;j++){							 
-											courseSeed += courses[i].charCodeAt(j);
+											courseSeed += (courses[i].charCodeAt(j)-47);
 										}
 							    	}
 									
@@ -347,6 +350,7 @@
 							
 							      //store seed so that the recommendation page can use it
 							      localStorage.setItem("seed", seed);
+							      //console.log(seed);
 							      
 							      // Navigate to the new page
 							      window.location.href = newPageUrl;

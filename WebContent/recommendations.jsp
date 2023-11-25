@@ -1,13 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+	
 <%@ page
 	import="com.shashi.service.impl.*, com.shashi.service.*,com.shashi.beans.*,java.util.*,javax.servlet.ServletOutputStream,java.io.*"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Concordia Cart</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recommendations</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/changes.css">
@@ -18,106 +17,151 @@
 </head>
 <body style="background-color: #E6F9E6;">
 
+ <script>
+ document.addEventListener("DOMContentLoaded", function() {
+	 
+				 
+	 	var minItems = 3;
+	 	var maxItems = 8;
+	 
+		const seed = localStorage.getItem("seed");
+		console.log(seed);
+		
+		//index of item to be kept
+		var keep = seed.charAt(0);
+		
+		
+		//quantity recommended for item at index of keep
+		var quantityToKeep = 0;
+		
+		var itemsNeeded = seed.charAt(0);
+		
+		//stops from having too few items
+		itemsNeeded = itemsNeeded > minItems ? itemsNeeded : minItems;
+		
+		//stops from having too many items
+		itemsNeeded = itemsNeeded < maxItems ? itemsNeeded : maxItems;
+		var numItems = 0;	
+		var index = 0;
+					
+		var i = 0;
+		
+	     var rows = document.getElementById("productTable").getElementsByTagName("tr");
+
+		
+		for(var i = 0;i<rows.length-1;i++){
+			if(i!=keep){
+				var remove = document.getElementById(i);
+				
+				//hide elements instead of removing them, so that they can be looped through
+				remove.style.display = "none";				
+				
+				//remove.parentNode.removeChild(remove);
+			}
+			else{
+				//set new index
+				var seedChar = seed.charAt((i)%rows.length)
+				
+				keep = i+parseInt(seedChar,10);
+				
+				quantityToKeep = keep;
+				
+				var quantity = document.getElementById("quantity"+i);
+				quantity.textContent = quantityToKeep+1;
+			}
+		}
+		
+		//MAYBEDO
+		//delete all tr element with display="none"
+		
+		 
+		 for(var i = 0;i<rows.length-1;i++){
+			 var totalId = document.getElementById("total"+i);
+				var quantity = document.getElementById("quantity"+i).textContent;
+				var price = document.getElementById("price"+i).textContent;
+				var total = parseInt(quantity,10) * parseFloat(price,10);
+				
+				console.log(total);
+				
+				totalId.textContent = total;
+		 }
+
+	    
+	});	
+	</script>
+
+	<%@ include file="header.jsp"%>
+
 	<%
-	/* Checking the user credentials */
-	String userName = (String) session.getAttribute("username");
-	String password = (String) session.getAttribute("password");
-	String userType = (String) session.getAttribute("usertype");
+	String message = request.getParameter("message");
 
-	boolean isValidUser = true;
-
-	if (userType == null || userName == null || password == null || !userType.equals("customer")) {
-
-		isValidUser = false;
-	}
 
 	ProductServiceImpl prodDao = new ProductServiceImpl();
 	List<ProductBean> products = new ArrayList<ProductBean>();
+	
+	products = prodDao.getAllProducts();
 
-	String search = request.getParameter("search");
-	String type = request.getParameter("type");
-	String message = "All Products";
-	if (search != null) {
-		products = prodDao.searchAllProducts(search);
-		message = "Showing Results for '" + search + "'";
-	} else if (type != null) {
-		products = prodDao.getAllProductsByType(type);
-		message = "Showing Results for '" + type + "'";
-	} else {
-		products = prodDao.getAllProducts();
-	}
-	if (products.isEmpty()) {
-		message = "No items found for the search '" + (search != null ? search : type) + "'";
-		products = prodDao.getAllProducts();
-	}
+	
 	%>
-
-	<jsp:include page="header.jsp" />
-
 	<div class="text-center"
-		style="color: black; font-size: 14px; font-weight: bold;"><%=message%></div>
-	<div class="text-center" id="message"
-		style="color: black; font-size: 14px; font-weight: bold;"></div>
+		style="color: green; font-size: 24px; font-weight: bold;">Order
+		Details</div>
 	<!-- Start of Product Items List -->
 	<div class="container">
-		<div class="row text-center">
+		<div class="table-responsive ">
+			<table class="table table-hover table-sm" id="productTable">
+				<thead
+					style="background-color: black; color: white; font-size: 14px; font-weight: bold;">
+					<tr>
+						<th>Picture</th>
+						<th>ProductName</th>
+						<th>Add</th>
+						<th>Remove</th>					
+						<th>Quantity</th>
+						<th>Price</th>
+						<th>Total</th>
+					
 
-			<%
-			for (ProductBean product : products) {
-				int cartQty = new CartServiceImpl().getCartItemCount(userName, product.getProdId());
-			%>
-			<div class="col-sm-4" style='height: 350px;'>
-				<div class="thumbnail">
-					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
-						style="height: 150px; max-width: 180px">
-					<p class="productname"><%=product.getProdName()%>
-					</p>
+					</tr>
+				</thead>
+				<tbody
+					style="background-color: white; font-size: 15px; font-weight: bold;">
 					<%
-					String description = product.getProdInfo();
-					description = description.substring(0, Math.min(description.length(), 100));
+					int id = 0;
+					for (ProductBean order : products) {
 					%>
-					<p class="productinfo"><%=description%>..
-					</p>
-					<p class="price">
-						$
-						<%=product.getProdPrice()%>
-					</p>
-					<form method="post">
-						<%
-						if (cartQty == 0) {
-						%>
-						<button type="submit"
-							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1"
-							class="btn btn-success">Add to Cart</button>
-						&nbsp;&nbsp;&nbsp;
-						<button type="submit"
-							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1"
-							class="btn btn-primary">Buy Now</button>
-						<%
-						} else {
-						%>
-						<button type="submit"
-							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=0"
-							class="btn btn-danger">Remove From Cart</button>
-						&nbsp;&nbsp;&nbsp;
-						<button type="submit" formaction="cartDetails.jsp"
-							class="btn btn-success">Checkout</button>
-						<%
-						}
-						%>
-					</form>
-					<br />
-				</div>
-			</div>
 
-			<%
-			}
-			%>
+					<tr id="<%=id%>">
+						<td><img src="./ShowImage?pid=<%=order.getProdId()%>"
+							style="width: 50px; height: 50px;"></td>
+						<td><%=order.getProdName()%></td>
+						<td id="add<%=id%>">
+						<button>Add</button>
+						</td>
+						<td id="delete<%=id%>">
+						<button>Remove</button>
+						</td>
+			
+						<td id="quantity<%=id%>"></td>
+						<td id="price<%=id%>"><%=order.getProdPrice()%></td>
+						<td id="total<%=id%>"></td>
+						
+						<script>
+						
+						</script>
+						
+						<%id++; %>
+					</tr>
 
+					<%
+					}
+					%>
+
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<!-- ENd of Product Items List -->
-
 
 	<%@ include file="footer.html"%>
 
