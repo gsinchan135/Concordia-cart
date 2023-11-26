@@ -44,6 +44,11 @@
 					<div class="col-md-12 form-group">
 					
 					<div display="block">
+					
+					<!--TODO:  
+					the program inputted should be one of the options
+					-->
+					
 						<label >Program:</label>
 					</div>
 						<div display="block">
@@ -205,6 +210,13 @@
 			
 				<div class="row">
 					<div class="col-md-12 form-group">
+					<!-- TODO:
+					Check that regex follows squence of "XXXX YYYY" 
+					where X is a letter and Y is a number
+					Must be at least 3 letters and 3 letters
+					But not more than 4 letters and 4 letters
+					Space between the letters and numbers is optional
+					-->
 					
 						<label for="last_name">Course</label> 
 						<input type="text"
@@ -223,7 +235,7 @@
 				
 				    <script>
 				        function addToList() {
-				        	//FIXIT
+				        	//TODO:
 				        	//clicking on course text box and hitting enter removes most recent li added
 				        	
 				        	
@@ -344,6 +356,10 @@
 									
 							    	
 							    	var seed = programSeed + courseSeed;
+							    	
+							    	//replaces all zeros with threes to stop program from stalling out
+							    	seed = seed.replace(/0/g, '3');
+
 							    	
 							      // Specify the URL of the page you want to navigate to
 							      var newPageUrl = 'recommendations.jsp'; // Replace with your desired URL

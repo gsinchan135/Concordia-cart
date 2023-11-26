@@ -20,71 +20,107 @@
  <script>
  document.addEventListener("DOMContentLoaded", function() {
 	 
-				 
-	 	var minItems = 3;
-	 	var maxItems = 8;
 	 
-		const seed = localStorage.getItem("seed");
-		console.log(seed);
+	 	//gets a list of random numbers from the seed
+	 	var recs = getRandomNums();
+	 	
+				
+		revealRows(recs[0],recs[1]);
 		
-		//index of item to be kept
-		var keep = seed.charAt(0);
+		getTotal();
 		
 		
-		//quantity recommended for item at index of keep
-		var quantityToKeep = 0;
 		
-		var itemsNeeded = seed.charAt(0);
 		
-		//stops from having too few items
-		itemsNeeded = itemsNeeded > minItems ? itemsNeeded : minItems;
-		
-		//stops from having too many items
-		itemsNeeded = itemsNeeded < maxItems ? itemsNeeded : maxItems;
-		var numItems = 0;	
-		var index = 0;
-					
-		var i = 0;
-		
-	     var rows = document.getElementById("productTable").getElementsByTagName("tr");
+		function getRandomNums(){
+	 		var minItems = 3;
+		 	var maxItems = 8;
+		 
+			const seed = (localStorage.getItem("seed"));
+			console.log(seed);
+			
+			//indexes of item to be kept
+			var keep = [];
+			var quantity = [];
+			
+			var itemsNeeded = Math.abs(parseInt(seed[0])-parseInt(seed[1]));
+			
+			//stops from having too few items
+			itemsNeeded = itemsNeeded > minItems ? itemsNeeded : minItems;
+			
+			//stops from having too many items
+			itemsNeeded = itemsNeeded < maxItems ? itemsNeeded : maxItems;
+			var numItems = 0;	
+			var index = 0;
+										
+			var currentIndex = 1;
+			
+			//get random numbers from seed to pick which rows are recommended
+			for(var i = 0;i<itemsNeeded;i++){
+			    const currentNumber = parseInt(seed[currentIndex])+1;
 
+				keep.push(currentNumber);
+				quantity.push(Math.round(seed[currentIndex*2%seed.length]*2.5));
+						
+						
+			    currentIndex = (currentIndex + currentNumber) % seed.length;
+			}
+			var arrs = [keep,quantity];
+			
+			return arrs;
+	 	}
 		
-		for(var i = 0;i<rows.length-1;i++){
-			if(i!=keep){
-				var remove = document.getElementById(i);
+		
+		function revealRows(keep,quantity){
+			var rows = document.getElementsByClassName("items");
+			currentIndex = 0;
+			
+			for(var i = 0;i<keep.length;i++){
 				
-				//hide elements instead of removing them, so that they can be looped through
-				remove.style.display = "none";				
+				currentIndex = (currentIndex+keep[i])%rows.length-1;
+								
+				var rowId = document.getElementById("row"+currentIndex);
+				//console.log(rowId);
 				
-				//remove.parentNode.removeChild(remove);
+				//if the row hasn't already been revealed, reveal it
+				
+				
+				if(window.getComputedStyle(rowId).getPropertyValue("display") == "none"){
+					rowId.style.display = "table-row";
+					
+					//sets quantity based on what's in quantity array
+					var quantityId = document.getElementById("quantity"+currentIndex);
+					
+								
+					quantityId.textContent =  quantity.pop();
+					
+				}
+				else{
+					//if it loops back around and the element is already revealed, it will try to reveal another row
+					i--;
+				}
+				
 			}
-			else{
-				//set new index
-				var seedChar = seed.charAt((i)%rows.length)
-				
-				keep = i+parseInt(seedChar,10);
-				
-				quantityToKeep = keep;
-				
-				var quantity = document.getElementById("quantity"+i);
-				quantity.textContent = quantityToKeep+1;
-			}
+			
+			
+			
 		}
 		
-		//MAYBEDO
-		//delete all tr element with display="none"
 		
+		function getTotal(){
+			var rows = document.getElementsByClassName("items");
+			
+			for(var i = 0;i<rows.length-1;i++){
+				 var totalId = document.getElementById("total"+i);
+					var quantity = document.getElementById("quantity"+i).textContent;
+					var price = document.getElementById("price"+i).textContent;
+					var total = parseInt(quantity,10) * parseFloat(price,10);
+										
+					totalId.textContent = total;
+			 }
+		}
 		 
-		 for(var i = 0;i<rows.length-1;i++){
-			 var totalId = document.getElementById("total"+i);
-				var quantity = document.getElementById("quantity"+i).textContent;
-				var price = document.getElementById("price"+i).textContent;
-				var total = parseInt(quantity,10) * parseFloat(price,10);
-				
-				console.log(total);
-				
-				totalId.textContent = total;
-		 }
+		 
 
 	    
 	});	
@@ -120,6 +156,7 @@
 						<th>Quantity</th>
 						<th>Price</th>
 						<th>Total</th>
+						<th>Add To Card</th>
 					
 
 					</tr>
@@ -131,27 +168,47 @@
 					for (ProductBean order : products) {
 					%>
 
-					<tr id="<%=id%>">
+					<tr id="row<%=id%>" style="display: none" class="items">
 						<td><img src="./ShowImage?pid=<%=order.getProdId()%>"
 							style="width: 50px; height: 50px;"></td>
 						<td><%=order.getProdName()%></td>
 						<td id="add<%=id%>">
+						
+						
+						<!--TODO:
+						Increase the quantity by 1 when button pressed
+						-->					
 						<button>Add</button>
 						</td>
 						<td id="delete<%=id%>">
+						<!--TODO:
+						Decrease Quantity by 1 when button pressed
+						-->		
+						<!-- TODO:
+						If quantity is set to 0, item should be removed
+						 -->			
 						<button>Remove</button>
 						</td>
 			
+						<!--TODO:
+						Be able to click on the quantity and change it by typing
+						if the item is an electronic, the quantity should be 1
+						 -->
 						<td id="quantity<%=id%>"></td>
 						<td id="price<%=id%>"><%=order.getProdPrice()%></td>
+						
+						<!--TODO: Total should change when the quantity is changed -->
 						<td id="total<%=id%>"></td>
+						<td>
+						<!--TODO: 
+						Adds item to the cart when button pressed and remove from list
+						-->
+						<button>Add To Cart</button>
+						</td>
+					
 						
-						<script>
-						
-						</script>
-						
-						<%id++; %>
 					</tr>
+						<%id++;%>
 
 					<%
 					}
