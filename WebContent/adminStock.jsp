@@ -83,6 +83,7 @@
 						<td><%=product.getProdQuantity()%></td>
 						
 						<!-- Change buttons to add/remove discount -->
+						
 						<td>
 							<form method="post">
 								<button type="submit"
