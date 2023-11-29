@@ -22,6 +22,8 @@ public interface ProductService {
 	public List<ProductBean> getAllProducts();
 	
 	public List<ProductBean> getBestSellingProducts();
+	
+	public List<ProductBean> getLeastSellingProducts();
 
 	public List<ProductBean> getAllProductsByType(String type);
 
