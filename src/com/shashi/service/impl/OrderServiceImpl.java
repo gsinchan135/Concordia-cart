@@ -10,6 +10,7 @@ import java.util.List;
 import com.shashi.beans.CartBean;
 import com.shashi.beans.OrderBean;
 import com.shashi.beans.OrderDetails;
+import com.shashi.beans.ProductBean;
 import com.shashi.beans.TransactionBean;
 import com.shashi.service.OrderService;
 import com.shashi.utility.DBUtil;

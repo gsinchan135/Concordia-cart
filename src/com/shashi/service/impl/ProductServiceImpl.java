@@ -223,6 +223,46 @@ public class ProductServiceImpl implements ProductService {
 
 		return products;
 	}
+	
+	public List<ProductBean> getBestSellingProducts(){
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("SELECT p.*, SUM(quantity) AS soldQTY FROM orders o JOIN product p ON p.pid = o.prodid GROUP BY prodid ORDER BY soldQTY desc LIMIT 3");
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
 
 	@Override
 	public List<ProductBean> getAllProductsByType(String type) {

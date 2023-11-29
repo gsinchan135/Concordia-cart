@@ -3,6 +3,7 @@ package com.shashi.service;
 import java.io.InputStream;
 import java.util.List;
 
+import com.shashi.beans.OrderBean;
 import com.shashi.beans.ProductBean;
 
 public interface ProductService {
@@ -19,6 +20,8 @@ public interface ProductService {
 	public String updateProductPrice(String prodId, double updatedPrice);
 
 	public List<ProductBean> getAllProducts();
+	
+	public List<ProductBean> getBestSellingProducts();
 
 	public List<ProductBean> getAllProductsByType(String type);
 
