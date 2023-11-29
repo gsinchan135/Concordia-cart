@@ -238,7 +238,6 @@ public class ProductServiceImpl implements ProductService {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-
 				ProductBean product = new ProductBean();
 
 				product.setProdId(rs.getString(1));
@@ -250,7 +249,6 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdImage(rs.getAsciiStream(7));
 
 				products.add(product);
-
 			}
 
 		} catch (SQLException e) {
