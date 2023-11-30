@@ -113,7 +113,7 @@
 						  <option value="Entrepreneurship">
 						  <option value="Environmental and Sustainability Science (BSc)">
 						  <option value="Environmental Geography (BSc)">
-						  <option value="Études françaises (French Studies) (BA)">
+						  <option value="Ã‰tudes franÃ§aises (French Studies) (BA)">
 						  <option value="Exercise Science (BSc)">
 						  <option value="Family Life Education (Cert)">
 						  <option value="Fibres and Material Practices (BFA)">
@@ -124,7 +124,7 @@
 						  <option value="Financial Reporting">
 						  <option value="First Peoples Studies (BA)">
 						  <option value="Foundations for Business (Cert)">
-						  <option value="French Studies (Études françaises) (BA)">
+						  <option value="French Studies (Ã‰tudes franÃ§aises) (BA)">
 						  <option value="Game Design (Minor)">
 						  <option value="Geospatial Technologies (Minor)">
 						  <option value="German Studies (Minor)">
@@ -220,7 +220,7 @@
 					
 						<label for="last_name">Course</label> 
 						<input type="text"
-							placeholder="Enter Course" name="course" class="form-control"							id="course" maxlength="8">
+							placeholder="Enter Course" name="course" class="form-control"id="course" maxlength="8" pattern="[A-Za-z]{3,4}\s?\d{3,4}">
 					<button type="button" onclick="addToList()">Add to List</button>
 						
 					</div>
