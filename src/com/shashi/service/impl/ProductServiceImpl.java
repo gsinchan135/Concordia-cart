@@ -271,7 +271,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT p.* FROM product p LEFT JOIN orders o on p.pid = o.prodid ORDER BY o.quantity LIMIT 3");
+			ps = con.prepareStatement("SELECT * FROM (SELECT p.*, SUM(o.quantity) AS totalQuantitySold, RANK() OVER (ORDER BY SUM(o.quantity) DESC) AS bestSellingRank, RANK() OVER (ORDER BY SUM(o.quantity)) AS leastSellingRank FROM product p LEFT JOIN orders o ON p.pid = o.prodid GROUP BY p.pid) AS ranked LIMIT 3");
 
 			rs = ps.executeQuery();
 

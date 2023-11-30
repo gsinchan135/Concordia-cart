@@ -53,6 +53,7 @@
 						<th>Price</th>
 						<th>Sold Qty</th>
 						<th>Stock Qty</th>
+						<th>Suggested Discount Price (-10%)</th>
 						<th colspan="2" style="text-align: center">Actions</th>
 					</tr>
 				</thead>
@@ -81,8 +82,7 @@
 						<td><%=product.getProdPrice()%></td>
 						<td><%=new OrderServiceImpl().countSoldItem(product.getProdId())%></td>
 						<td><%=product.getProdQuantity()%></td>
-						
-						<!-- Change buttons to add/remove discount -->
+						<td style="color:red; font-weight: bold;"><%=Math.round(product.getProdPrice() * 0.9 * 100.0) / 100.0%></td>
 						
 						<td>
 							<form method="post">
@@ -135,6 +135,7 @@
 						<th>Price</th>
 						<th>Sold Qty</th>
 						<th>Stock Qty</th>
+						<th>Suggested Discount Price (-30%)</th>
 						<th colspan="2" style="text-align: center">Actions</th>
 					</tr>
 				</thead>
@@ -163,8 +164,7 @@
 						<td><%=product.getProdPrice()%></td>
 						<td><%=new OrderServiceImpl().countSoldItem(product.getProdId())%></td>
 						<td><%=product.getProdQuantity()%></td>
-						
-						<!-- Change buttons to add/remove discount -->
+						<td style="color:red; font-weight:bold;"><%=Math.round(product.getProdPrice() * 0.7 * 100.0) / 100.0%></td>
 						
 						<td>
 							<form method="post">
