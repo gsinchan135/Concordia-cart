@@ -31,7 +31,36 @@ function validateStudentID() {
 	<%
 	String message = request.getParameter("message");
 	%>
+	
+	<script>
+	
+	function showID(){
+		var role = document.getElementById("userrole").value;
+		var studID = document.getElementById("studID");
+		
+		var input = document.getElementById("student_id");
+		var studTabIDX = input.tabIndex;
+		sessionStorage.setItem("tabIdx",studTabIDX);
+		
+		if(role=="customer"){
+			studID.style.display="block";
+			input.required=true;
+			var getTab = sessionStorage.getItem("tabIdx");
+			input.tabIndex = getTab;
+		}
+		else{
+			studID.style.display="none";
+			input.required=false;
+			input.tabIndex = -1;
+			
+		}
+	
+	}
+		
+	</script>
 	<div class="container">
+	
+	
 		<div class="row"
 			style="margin-top: 5px; margin-left: 2px; margin-right: 2px;">
 			<form action="./LoginSrv" method="post"
@@ -67,17 +96,17 @@ function validateStudentID() {
 				<div class="row">
 					<div class="col-md-12 form-group">
 						<label for="userrole">Login As</label> <select name="usertype"
-							id="userrole" class="form-control" required>
+							id="userrole" class="form-control" required onchange="showID()">
 							<option value="customer" selected>CUSTOMER</option>
 							<option value="admin">ADMIN</option>
 						</select>
 					</div>
 				</div>
-                           <div class="row">
+                           <div class="row" id="studID">
                                  <div class="col-md-12 form-group">
                                       <label for="student_id">Student ID</label> <input type="text"
                             placeholder="Enter Student ID" name="student_id" class="form-control"
-                            id="student_id">
+                            id="student_id" required>
                     </div>
                 </div>
 				<div class="row">
@@ -89,6 +118,7 @@ function validateStudentID() {
 
 		</div>
 	</div>
+	
 
 	<%@ include file="footer.html"%>
 
