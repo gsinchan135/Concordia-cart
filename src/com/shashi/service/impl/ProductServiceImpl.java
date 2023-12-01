@@ -224,6 +224,87 @@ public class ProductServiceImpl implements ProductService {
 		return products;
 	}
 	
+	public List<ProductBean> getPurchasedProducts(String username){
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("SELECT DISTINCT p.*, o.quantity FROM product p LEFT JOIN orders o ON o.prodid = p.pid LEFT JOIN transactions t ON t.transid = o.orderid where t.username=?  ORDER BY o.quantity desc limit 3");
+			ps.setString(1, username);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
+	
+	public List<ProductBean> getCuratedAllProducts(){
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("SELECT * FROM (SELECT p.*, SUM(o.quantity) AS totalQuantitySold, RANK() OVER (ORDER BY SUM(o.quantity) DESC) AS bestSellingRank, RANK() OVER (ORDER BY SUM(o.quantity)) AS leastSellingRank FROM product p LEFT JOIN orders o ON p.pid = o.prodid GROUP BY p.pid) AS ranked ORDER BY CASE WHEN bestSellingRank <= 3 THEN bestSellingRank WHEN leastSellingRank <= 3 THEN leastSellingRank + (SELECT COUNT(*) FROM product) ELSE bestSellingRank + leastSellingRank + (SELECT COUNT(*) FROM product) END;");
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
+	
 	public List<ProductBean> getBestSellingProducts(){
 		List<ProductBean> products = new ArrayList<ProductBean>();
 
@@ -609,38 +690,5 @@ public class ProductServiceImpl implements ProductService {
 
 		return quantity;
 	}
-	
-
-public String restockProduct(String prodId, int restockQuantity) {
-    String status = "Restock Operation Failed!";
-
-    Connection con = DBUtil.provideConnection();
-
-    PreparedStatement ps = null;
-
-    try {
-        ps = con.prepareStatement("update product set pquantity = pquantity + ? where pid = ?");
-
-        ps.setInt(1, restockQuantity);
-        ps.setString(2, prodId);
-
-        int k = ps.executeUpdate();
-
-        if (k > 0)
-            status = "Product restocked successfully";
-        else
-            status = "Product not found or operation failed!";
-
-    } catch (SQLException e) {
-        status = "Error: " + e.getMessage();
-        e.printStackTrace();
-    } finally {
-        DBUtil.closeConnection(con);
-        DBUtil.closeConnection(ps);
-    }
-
-    return status;
-}
-
 
 }

@@ -1,5 +1,3 @@
-login.jsp
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -13,16 +11,6 @@ login.jsp
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-function validateStudentID() {
-    var studentId = document.getElementById('student_id').value;
-    // Check if the student ID is 8 digits and starts with the number 4
-    if (!/^[4]\d{7}$/.test(studentId)) {
-        alert('The Student ID must be 8 digits and start with 4.');
-        return false;
-    }
-    return true;
-}
 </head>
 <body style="background-color: #E6F9E6;">
 
@@ -73,13 +61,6 @@ function validateStudentID() {
 						</select>
 					</div>
 				</div>
-                           <div class="row">
-                                 <div class="col-md-12 form-group">
-                                      <label for="student_id">Student ID</label> <input type="text"
-                            placeholder="Enter Student ID" name="student_id" class="form-control"
-                            id="student_id">
-                    </div>
-                </div>
 				<div class="row">
 					<div class="col-md-12 text-center">
 						<button type="submit" class="btn btn-success">Login</button>

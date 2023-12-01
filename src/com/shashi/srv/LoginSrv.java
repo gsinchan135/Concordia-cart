@@ -1,5 +1,3 @@
-//LoginSrv.java
-
 package com.shashi.srv;
 
 import java.io.IOException;
@@ -32,21 +30,7 @@ public class LoginSrv extends HttpServlet {
 		String userName = request.getParameter("username");
 		String password = request.getParameter("password");
 		String userType = request.getParameter("usertype");
-		String studentId = request.getParameter("student_id");
 		response.setContentType("text/html");
-
-
-		if(!userType.equals("admin")) {
-			 if (studentId == null || !studentId.matches("^\\d{7,9}$")) {
-		            String message = "Invalid Student ID. Must be 8 digits starting with 4.";
-		            request.setAttribute("message", message);
-		            RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-		            rd.forward(request, response);
-		            return;
-		        }	
-		}
-	
-        
 
 		String status = "Login Denied! Invalid Username or password.";
 
