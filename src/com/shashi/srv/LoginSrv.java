@@ -30,9 +30,22 @@ public class LoginSrv extends HttpServlet {
 		String userName = request.getParameter("username");
 		String password = request.getParameter("password");
 		String userType = request.getParameter("usertype");
+		String studentId = request.getParameter("student_id");
 		response.setContentType("text/html");
 
 		String status = "Login Denied! Invalid Username or password.";
+		
+		if(userType.equals("customer")) {
+			 if (studentId == null || !studentId.matches("^\\d{8}$")) {
+		            String message = "Invalid Student ID. Must be 8 digits";
+		            request.setAttribute("message", message);
+		            RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
+		            rd.forward(request, response);
+		            return;
+		        }	
+		}
+		
+		
 
 		if (userType.equals("admin")) { // Login as Admin
 

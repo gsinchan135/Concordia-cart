@@ -691,4 +691,34 @@ public class ProductServiceImpl implements ProductService {
 		return quantity;
 	}
 
+	public String restockProduct(String prodId, int restockQuantity) {
+	    String status = "Restock Operation Failed!";
+
+	    Connection con = DBUtil.provideConnection();
+
+	    PreparedStatement ps = null;
+
+	    try {
+	        ps = con.prepareStatement("update product set pquantity = pquantity + ? where pid = ?");
+
+	        ps.setInt(1, restockQuantity);
+	        ps.setString(2, prodId);
+
+	        int k = ps.executeUpdate();
+
+	        if (k > 0)
+	            status = "Product restocked successfully";
+	        else
+	            status = "Product not found or operation failed!";
+
+	    } catch (SQLException e) {
+	        status = "Error: " + e.getMessage();
+	        e.printStackTrace();
+	    } finally {
+	        DBUtil.closeConnection(con);
+	        DBUtil.closeConnection(ps);
+	    }
+
+	    return status;
+	}
 }
