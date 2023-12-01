@@ -21,6 +21,10 @@ public interface ProductService {
 
 	public List<ProductBean> getAllProducts();
 	
+	public List<ProductBean> getPurchasedProducts(String username);
+	
+	public List<ProductBean> getCuratedAllProducts();
+	
 	public List<ProductBean> getBestSellingProducts();
 	
 	public List<ProductBean> getLeastSellingProducts();
