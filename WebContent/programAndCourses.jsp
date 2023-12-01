@@ -206,6 +206,30 @@
 					</div>
 				</div>
 				
+					<script>
+    function validateProgram() {
+        var inputProgram = document.getElementById('programName').value;
+        var programsList = document.getElementById('programs').options;
+        // Check if the entered program is in the list
+        var programExists = false;
+        for (var i = 0; i < programsList.length; i++) {
+            if (programsList[i].value === inputProgram) {
+                programExists = true;
+                return true;
+            }
+        }
+        // Display an alert if the program doesn't exist in the list
+        if (!programExists) {
+            alert('Please select a valid program from the list.');
+            document.getElementById('programName').value = ''; // Clear the input field
+            return false;
+        }
+    }
+    
+    
+    
+</script>
+				
 				<%-- Course text box --%>
 			
 				<div class="row">
@@ -240,8 +264,12 @@
 				        	
 				        	
 				            <%-- Get the input value --%>
-				            var courseCode = document.getElementById('course').value;				
-				            if (courseCode.trim() !== "") {
+				            var courseCode = document.getElementById('course').value;	
+				            
+				         // Define the regex pattern for the course code
+			                var regexPattern = /^[a-zA-Z]{3,4}\s?\d{3,4}$/;
+			                
+				            if (courseCode.trim() !== ""&& regexPattern.test(courseCode)) {
 				            	
 				                // Create a new list item
 				                var listItem = document.createElement("li");
@@ -291,6 +319,21 @@
 				                course.value = "";
 				            }
 				        }
+				        
+				        function isCourseAlreadyAdded(newCourse) {
+				            var courseList = document.getElementById("courseList").getElementsByTagName("li");
+
+				            for (var i = 0; i < courseList.length; i++) {
+				                var existingCourse = courseList[i].getElementsByClassName("courseName")[0].textContent;
+
+				                if (newCourse === existingCourse) {
+				                    alert("Course already added to the list!");
+				                    return true;
+				                }
+				            }
+
+				            return false;
+				        }
 				    </script>
 				    </div>
 				</div>
@@ -307,6 +350,10 @@
 							
 							    // Add a click event listener to the button
 							    myButton.addEventListener('click', function () {
+							    	
+							    	if(!validateProgram()){
+							    		return;
+							    	}
 							    	
 							    	<%-- Generate seed --%>
 							    	

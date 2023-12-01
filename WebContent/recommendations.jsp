@@ -63,7 +63,7 @@
 				quantity.push(Math.round(seed[currentIndex*2%seed.length]*2.5));
 						
 						
-			    currentIndex = (currentIndex + currentNumber) % seed.length;
+			    currentIndex = ((currentIndex + currentNumber)*178) % seed.length;
 			}
 			var arrs = [keep,quantity];
 			
