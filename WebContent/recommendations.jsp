@@ -178,16 +178,17 @@
 						<!--TODO:
 						Increase the quantity by 1 when button pressed
 						-->					
-						<button>Add</button>
+						<button onclick="increaseQuantity('<%=id%>')">Add</button>
 						</td>
 						<td id="delete<%=id%>">
 						<!--TODO:
 						Decrease Quantity by 1 when button pressed
-						-->		
+						-->
+						<button onclick="decreaseQuantity('<%=id%>')">Remove</button>		
 						<!-- TODO:
 						If quantity is set to 0, item should be removed
 						 -->			
-						<button>Remove</button>
+						
 						</td>
 			
 						<!--TODO:
@@ -195,6 +196,7 @@
 						if the item is an electronic, the quantity should be 1
 						 -->
 						<td id="quantity<%=id%>"></td>
+                    
 						<td id="price<%=id%>"><%=order.getProdPrice()%></td>
 						
 						<!--TODO: Total should change when the quantity is changed -->
@@ -203,7 +205,7 @@
 						<!--TODO: 
 						Adds item to the cart when button pressed and remove from list
 						-->
-						<button>Add To Cart</button>
+						<button onclick="addToCart('<%=id%>')">Add To Cart</button>
 						</td>
 					
 						
@@ -218,6 +220,58 @@
 			</table>
 		</div>
 	</div>
+	
+<script>
+    function increaseQuantity(itemId) {
+        var quantityElement = document.getElementById("quantity" + itemId);
+        var currentQuantity = parseInt(quantityElement.innerText) || 0;
+        quantityElement.innerText = currentQuantity + 1;
+        updateTotal(itemId);
+    }
+
+    function decreaseQuantity(itemId) {
+        var quantityElement = document.getElementById("quantity" + itemId);
+        var currentQuantity = parseInt(quantityElement.innerText) || 0;
+
+        if (currentQuantity > 0) {
+            quantityElement.innerText = currentQuantity - 1;
+            updateTotal(itemId);
+        } else {
+            // Remove the item from the list if the quantity is already 0
+            var row = quantityElement.parentNode.parentNode;
+            row.style.display = "none";
+        }
+    }
+
+    function updateTotal(itemId, isElectronic) {
+        var quantityElement = document.getElementById("quantity" + itemId);
+        var priceElement = document.getElementById("price" + itemId);
+        var totalElement = document.getElementById("total" + itemId);
+
+        var quantity = parseInt(quantityElement.innerText) || 0;
+        var price = parseFloat(priceElement.innerText) || 0;
+
+        // If the item is electronic, set the quantity to 1
+        if (isElectronic) {
+            quantity = 1;
+            quantityElement.innerText = 1;
+        }
+
+        totalElement.innerText = (quantity * price).toFixed(2);
+    }
+
+    function addToCart(itemId) {
+        var quantityElement = document.getElementById("quantity" + itemId);
+        var quantity = parseInt(quantityElement.innerText) || 0;
+
+        if (quantity > 0) {
+            // TODO: Implement logic to add item to the cart and remove from the list
+            console.log("Item added to cart:", itemId, "Quantity:", quantity);
+            var row = quantityElement.parentNode.parentNode;
+            row.style.display = "none";
+        }
+    }
+</script>	
 	<!-- ENd of Product Items List -->
 
 	<%@ include file="footer.html"%>
