@@ -1,4 +1,4 @@
-RestockProductSrv:
+//RestockProductSrv:
 
 package com.shashi.srv;
 

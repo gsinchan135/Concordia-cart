@@ -77,7 +77,7 @@ function validateStudentID() {
                                  <div class="col-md-12 form-group">
                                       <label for="student_id">Student ID</label> <input type="text"
                             placeholder="Enter Student ID" name="student_id" class="form-control"
-                            id="student_id" required>
+                            id="student_id">
                     </div>
                 </div>
 				<div class="row">
