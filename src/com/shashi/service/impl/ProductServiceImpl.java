@@ -1,3 +1,5 @@
+ProductServiceImpl class:
+
 package com.shashi.service.impl;
 
 import java.io.InputStream;
@@ -271,7 +273,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM (SELECT p.*, SUM(o.quantity) AS totalQuantitySold, RANK() OVER (ORDER BY SUM(o.quantity) DESC) AS bestSellingRank, RANK() OVER (ORDER BY SUM(o.quantity)) AS leastSellingRank FROM product p LEFT JOIN orders o ON p.pid = o.prodid GROUP BY p.pid) AS ranked LIMIT 3");
+			ps = con.prepareStatement("SELECT p.* FROM product p LEFT JOIN orders o on p.pid = o.prodid ORDER BY o.quantity LIMIT 3");
 
 			rs = ps.executeQuery();
 
@@ -610,4 +612,40 @@ public class ProductServiceImpl implements ProductService {
 		return quantity;
 	}
 
+@Override
+public String restockProduct(String prodId, int restockQuantity) {
+    String status = "Restock Operation Failed!";
+
+    Connection con = DBUtil.provideConnection();
+
+    PreparedStatement ps = null;
+
+    try {
+        ps = con.prepareStatement("update product set pquantity = pquantity + ? where pid = ?");
+
+        ps.setInt(1, restockQuantity);
+        ps.setString(2, prodId);
+
+        int k = ps.executeUpdate();
+
+        if (k > 0)
+            status = "Product restocked successfully";
+        else
+            status = "Product not found or operation failed!";
+
+    } catch (SQLException e) {
+        status = "Error: " + e.getMessage();
+        e.printStackTrace();
+    } finally {
+        DBUtil.closeConnection(con);
+        DBUtil.closeConnection(ps);
+    }
+
+    return status;
 }
+
+}
+
+
+
+
